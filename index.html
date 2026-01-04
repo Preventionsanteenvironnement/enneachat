@@ -1,332 +1,394 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin – Chat privé</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin – Chat privé</title>
 
-<style>
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Inter, sans-serif;
-  background:#020617;
-  color:#e5e7eb;
-}
-.app{
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-}
-.header{
-  padding:10px 14px;
-  border-bottom:1px solid #1f2937;
-  background:linear-gradient(to right,#0f172a,#020617);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-.header h1{
-  font-size:15px;
-  margin:0;
-}
-.headerRight{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.status{
-  background:#0f172a;
-  border:1px solid #1f2937;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:12px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#22c55e;
-}
-.refreshBtn{
-  background:#1e293b;
-  border:1px solid #334155;
-  color:#e5e7eb;
-  padding:6px 12px;
-  border-radius:999px;
-  cursor:pointer;
-}
-.refreshBtn:hover{
-  background:#334155;
-}
+  <style>
+    body{
+      margin:0;
+      background:#020617;
+      color:#e5e7eb;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Inter, Roboto, sans-serif;
+    }
 
-.container{
-  flex:1;
-  display:flex;
-  min-height:0;
-}
-.sidebar{
-  width:310px;
-  border-right:1px solid #1f2937;
-  display:flex;
-  flex-direction:column;
-  background:#030712;
-}
-.sidebar h2{
-  font-size:13px;
-  margin:10px 12px 6px;
-  color:#94a3b8;
-}
-.list{
-  flex:1;
-  overflow-y:auto;
-}
-.item{
-  padding:8px 10px;
-  border-bottom:1px solid #0f172a;
-  cursor:pointer;
-}
-.item:hover{
-  background:#0b1220;
-}
-.item.active{
-  background:#111827;
-}
-.item .title{
-  font-size:13px;
-  font-weight:500;
-}
-.item .meta{
-  font-size:11px;
-  color:#94a3b8;
-}
+    header{
+      padding:14px 18px;
+      background:linear-gradient(135deg,#0f172a,#020617 70%);
+      border-bottom:1px solid #1f2937;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
 
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-}
-.empty{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#64748b;
-}
+    header .title{
+      font-size:18px;
+      font-weight:700;
+    }
 
-.topbar{
-  padding:10px;
-  border-bottom:1px solid #1f2937;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+    main{
+      height:calc(100vh - 72px);
+      display:flex;
+      overflow:hidden;
+    }
 
-.btn-danger{
-  background:#7f1d1d;
-  border:1px solid #b91c1c;
-  color:white;
-  padding:8px 12px;
-  border-radius:8px;
-  cursor:pointer;
-}
-.btn-danger:hover{
-  background:#b91c1c;
-}
+    .left{
+      width:360px;
+      max-width:100%;
+      border-right:1px solid #1f2937;
+      background:#020617;
+      display:flex;
+      flex-direction:column;
+    }
 
-.messages{
-  flex:1;
-  overflow-y:auto;
-  padding:10px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
+    .left h2{
+      margin:0;
+      padding:10px 14px;
+      font-size:14px;
+      font-weight:700;
+      border-bottom:1px solid #1f2937;
+      color:#9ca3af;
+    }
 
-.msg{
-  background:#020617;
-  border:1px solid #1f2937;
-  padding:8px 10px;
-  border-radius:10px;
-  max-width:70%;
-}
+    .convList{
+      flex:1;
+      overflow-y:auto;
+    }
 
-.user{
-  align-self:flex-end;
-  background:#16a34a;
-  color:#022c22;
-}
+    .conv{
+      padding:10px 14px;
+      border-bottom:1px solid #111827;
+      cursor:pointer;
+    }
 
-.author{
-  align-self:flex-start;
-}
+    .conv:hover{
+      background:#0b1220;
+    }
 
-@media(max-width:900px){
-  .sidebar{width:220px;}
-}
+    .conv.active{
+      background:#1f2937;
+    }
 
-@media(max-width:700px){
-  .container{
-    flex-direction:column;
-  }
-  .sidebar{
-    width:100%;
-    height:220px;
-  }
-}
-</style>
+    .conv .time{
+      font-size:13px;
+      color:#9ca3af;
+    }
+
+    .conv .preview{
+      font-size:12px;
+      color:#6b7280;
+    }
+
+    .right{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+
+    .convHead{
+      padding:10px 14px;
+      border-bottom:1px solid #1f2937;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:14px;
+    }
+
+    .messages{
+      flex:1;
+      overflow-y:auto;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .msgRow{
+      display:flex;
+      width:100%;
+    }
+
+    .msgRow.user{
+      justify-content:flex-start;
+    }
+
+    .msgRow.author{
+      justify-content:flex-end;
+    }
+
+    .bubble{
+      max-width:70%;
+      padding:8px 11px;
+      border-radius:14px;
+      font-size:13px;
+      line-height:1.3;
+    }
+
+    .bubble.user{
+      background:#1e293b;
+      border:1px solid rgba(59,130,246,.3);
+    }
+
+    .bubble.author{
+      background:#16a34a;
+      color:#022c22;
+      border-bottom-right-radius:4px;
+    }
+
+    .meta{
+      font-size:11px;
+      color:#9ca3af;
+      margin-top:3px;
+    }
+
+    .footer{
+      border-top:1px solid #1f2937;
+      padding:10px;
+      background:#020617;
+      display:flex;
+      gap:8px;
+    }
+
+    textarea{
+      flex:1;
+      resize:none;
+      min-height:38px;
+      max-height:100px;
+      background:#020617;
+      border:1px solid #374151;
+      border-radius:10px;
+      color:white;
+      padding:6px 8px;
+      outline:none;
+    }
+
+    textarea:focus{
+      border-color:#22c55e;
+      box-shadow:0 0 0 1px rgba(34,197,94,.4);
+    }
+
+    button{
+      border:none;
+      border-radius:10px;
+      padding:8px 14px;
+      cursor:pointer;
+      font-size:13px;
+    }
+
+    .ok{
+      background:#22c55e;
+    }
+
+    .danger{
+      background:#b91c1c;
+      color:white;
+    }
+
+    @media(max-width:850px){
+      main{flex-direction:column;}
+      .left{width:100%;height:40vh;}
+      .right{height:60vh;}
+    }
+
+  </style>
 </head>
 
 <body>
 
-<div class="app">
+<header>
+  <div class="title">Admin — Chat privé</div>
 
-  <div class="header">
-    <h1>Admin – Chat privé</h1>
-
-    <div class="headerRight">
-      <button id="refreshBtn" class="refreshBtn">🔄 Rafraîchir</button>
-
-      <div class="status">
-        <div class="dot"></div>
-        <span>Connecté</span>
-      </div>
-    </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button id="reloadBtn">↻ Rafraîchir</button>
+    <span id="status" style="font-size:13px;color:#9ca3af">Connexion…</span>
   </div>
+</header>
 
-  <div class="container">
-    <div class="sidebar">
-      <h2>Conversations</h2>
-      <div id="convList" class="list"></div>
+<main>
+  <section class="left">
+    <h2>Conversations</h2>
+    <div id="convList" class="convList"></div>
+  </section>
+
+  <section class="right">
+    <div class="convHead">
+      <span id="convTitle">Aucune conversation</span>
+      <button class="danger" id="deleteBtn" disabled>Supprimer la conversation</button>
     </div>
 
-    <div class="main">
-      <div class="topbar">
-        <span id="convTitle">Aucune conversation</span>
-        <button id="deleteBtn" class="btn-danger" disabled>
-          Supprimer la conversation
-        </button>
-      </div>
+    <div id="messages" class="messages"></div>
 
-      <div id="messages" class="messages">
-        <div class="empty">Sélectionne une conversation à gauche.</div>
-      </div>
+    <div class="footer">
+      <textarea id="reply" placeholder="Répondre…"></textarea>
+      <button class="ok" id="sendBtn" disabled>Envoyer</button>
     </div>
-  </div>
-
-</div>
-
+  </section>
+</main>
 
 <script type="module">
+/* ================= FIREBASE ================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore,
   collection,
   doc,
+  getDocs,
+  addDoc,
   deleteDoc,
-  onSnapshot,
+  serverTimestamp,
+  orderBy,
   query,
-  orderBy
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey:"AIzaSyAd_3Qa9allKo9o4qZQQf3XVdRs3JMEGUQ",
-  authDomain:"enneagramme-chat.firebaseapp.com",
-  projectId:"enneagramme-chat"
+  apiKey: "AIzaSyAd_3Qa9allKo9o4qZQQf3XVdRs3JMEGUQ",
+  authDomain: "enneagramme-chat.firebaseapp.com",
+  projectId: "enneagramme-chat",
+  storageBucket: "enneagramme-chat.firebasestorage.app",
+  messagingSenderId: "703457736548",
+  appId: "1:703457736548:web:f91f0a1f36fd1a441e6c71",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* ================= UI ================= */
 const convList = document.getElementById("convList");
 const messagesBox = document.getElementById("messages");
-const convTitle = document.getElementById("convTitle");
+const title = document.getElementById("convTitle");
+const reply = document.getElementById("reply");
+const sendBtn = document.getElementById("sendBtn");
 const deleteBtn = document.getElementById("deleteBtn");
-const refreshBtn = document.getElementById("refreshBtn");
+const reloadBtn = document.getElementById("reloadBtn");
+const statusEl = document.getElementById("status");
 
-let currentConvId = null;
+let currentConv = null;
 let unsubMessages = null;
 
-refreshBtn.onclick = ()=>location.reload();
+/* ================= LOAD CONVERSATIONS ================= */
 
-function formatDate(ts){
-  if(!ts) return "Conversation";
-  const d = ts.toDate();
-  return d.toLocaleDateString("fr-FR",{day:"2-digit",month:"short",year:"numeric"})+
-         " — "+
-         d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+async function loadConversations(){
+  convList.innerHTML = "Chargement…";
+  const col = collection(db,"conversations");
+  const snap = await getDocs(col);
+
+  let html = "";
+  snap.forEach(docu=>{
+    const d = docu.data();
+    const date = d.createdAt?.toDate?.() || null;
+    let label = date
+      ? date.toLocaleDateString("fr-FR",{day:"2-digit",month:"short",year:"numeric"}) + " — " +
+        date.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})
+      : docu.id.slice(0,6);
+
+    html += `
+      <div class="conv" data-id="${docu.id}">
+        <div class="time">${label}</div>
+        <div class="preview">${d.lastMessage||""}</div>
+      </div>
+    `;
+  });
+
+  convList.innerHTML = html || "<div style='padding:10px;color:#6b7280'>Aucune conversation</div>";
+
+  [...document.querySelectorAll(".conv")].forEach(e=>{
+    e.onclick = ()=>selectConversation(e.dataset.id);
+  });
 }
 
-onSnapshot(collection(db,"conversations"), snapshot=>{
-  convList.innerHTML="";
+reloadBtn.onclick = loadConversations;
 
-  const convs=snapshot.docs
-    .map(d=>({id:d.id,...d.data()}))
-    .sort((a,b)=>(b.lastUpdated?.seconds||0)-(a.lastUpdated?.seconds||0));
+/* ================= SELECT CONVERSATION ================= */
 
-  if(convs.length===0){
-    convList.innerHTML=`<div class="item"><div class="title">Aucune conversation</div></div>`;
-    return;
-  }
+async function selectConversation(id){
+  currentConv = id;
 
-  convs.forEach(conv=>{
-    const el=document.createElement("div");
-    el.className="item"+(conv.id===currentConvId?" active":"");
-    el.onclick=()=>openConversation(conv.id,conv.createdAt);
+  [...document.querySelectorAll(".conv")].forEach(c=>c.classList.remove("active"));
+  document.querySelector(`.conv[data-id="${id}"]`)?.classList.add("active");
 
-    el.innerHTML=`
-      <div class="title">${formatDate(conv.createdAt)}</div>
-      <div class="meta">${conv.lastMessage || ""}</div>
-    `;
-
-    convList.appendChild(el);
-  });
-});
-
-function openConversation(id, createdAt){
-  currentConvId=id;
-  convTitle.textContent="Conversation — "+formatDate(createdAt);
-  deleteBtn.disabled=false;
-
-  messagesBox.innerHTML="";
+  title.textContent = "Conversation — " + id.slice(0,6);
+  deleteBtn.disabled = false;
+  sendBtn.disabled = false;
 
   if(unsubMessages) unsubMessages();
 
-  const ref=collection(doc(db,"conversations",id),"messages");
-  const q=query(ref, orderBy("createdAt","asc"));
+  const msgsRef = query(
+    collection(db,"conversations",id,"messages"),
+    orderBy("createdAt","asc")
+  );
 
-  unsubMessages=onSnapshot(q,snap=>{
-    messagesBox.innerHTML="";
-    snap.forEach(m=>{
-      const d=m.data();
-      const div=document.createElement("div");
-      div.className="msg "+(d.from==="user"?"user":"author");
-      div.textContent=d.text || "";
-      messagesBox.appendChild(div);
+  unsubMessages = onSnapshot(msgsRef,(snap)=>{
+    messagesBox.innerHTML = "";
+    snap.forEach(docu=>{
+      const d = docu.data();
+      const row = document.createElement("div");
+      row.className = "msgRow " + (d.from==="author"?"author":"user");
+
+      let bubble = document.createElement("div");
+      bubble.className = "bubble " + (d.from==="author"?"author":"user");
+      bubble.textContent = d.text;
+
+      let meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = d.from==="author"?"Moi":"Utilisateur";
+
+      let wrap=document.createElement("div");
+      wrap.appendChild(bubble);
+      wrap.appendChild(meta);
+
+      row.appendChild(wrap);
+      messagesBox.appendChild(row);
     });
 
-    if(snap.empty){
-      messagesBox.innerHTML=`<div class="empty">Aucun message encore.</div>`;
-    }
+    messagesBox.scrollTop = messagesBox.scrollHeight;
   });
 }
 
-deleteBtn.onclick=async()=>{
-  if(!currentConvId) return;
-  if(!confirm("Supprimer définitivement cette conversation ?")) return;
+/* ================= SEND MESSAGE ================= */
 
-  await deleteDoc(doc(db,"conversations",currentConvId));
+sendBtn.onclick = async ()=>{
+  if(!currentConv) return;
+  const txt = reply.value.trim();
+  if(!txt) return;
 
-  currentConvId=null;
-  convTitle.textContent="Aucune conversation";
-  deleteBtn.disabled=true;
-  messagesBox.innerHTML=`<div class="empty">Conversation supprimée.</div>`;
+  sendBtn.disabled=true;
+
+  const ref = collection(db,"conversations",currentConv,"messages");
+  await addDoc(ref,{
+    text:txt,
+    from:"author",
+    createdAt:serverTimestamp()
+  });
+
+  reply.value="";
+  sendBtn.disabled=false;
 };
+
+/* ================= DELETE ================= */
+
+deleteBtn.onclick = async ()=>{
+  if(!currentConv) return;
+  if(!confirm("Supprimer la conversation ?")) return;
+
+  await deleteDoc(doc(db,"conversations",currentConv));
+
+  currentConv=null;
+  title.textContent="Aucune conversation";
+  deleteBtn.disabled=true;
+  sendBtn.disabled=true;
+  messagesBox.innerHTML="";
+  loadConversations();
+};
+
+/* ================= START ================= */
+statusEl.textContent="Connecté";
+loadConversations();
+
 </script>
 
 </body>
